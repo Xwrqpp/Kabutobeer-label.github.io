@@ -6,7 +6,7 @@
 const FONT_SETS = ['font-01', 'font-02', 'font-03'];
 const FONT_LABELS = { 'font-01':'書体セット1', 'font-02':'書体セット2', 'font-03':'書体セット3' };
 // デザインは9種類固定:design-01 〜 design-09 という名前のリストを自動生成
-const DESIGN_IDS = Array.from({length:9}, (_,i)=> 'design-' + String(i+1).padStart(2,'0'));
+const DESIGN_IDS = Array.from({length:9}, (_,i)=> 'label_svg-' + String(i+1).padStart(2,'0'));
 
 // svgs/{font-01|02|03}/{design-01..09}.svg を都度読み込み、一度読んだものはキャッシュする。
 // ファイルが無い(まだ届いていない書体セットなど)場合は null を返す。
@@ -24,8 +24,7 @@ async function loadDesignSvg(fontSet, designId){
   return svgCache[key];
 }
 
-// アプリ全体で今どんな選択がされているかを持つ「状態」。ここを書き換えると
-// プレビューや保存内容がすべて連動して変わる
+// アプリ全体でユーザーの選択を保持する
 const state = {
   design: DESIGN_IDS[0],
   fontIndex: 0,
@@ -70,7 +69,7 @@ function applyColor(svg, roleSuffix, attr, color){
   });
 }
 
-const SAMPLE_TEXT = 'なまえ サンプル';
+const SAMPLE_TEXT = 'ここは自由に記入してね';
 
 // 文字を置く場所を示す目印(.text-01の四角形)を、画面には見えないように隠す関数
 function hideTextGuide(svg){
