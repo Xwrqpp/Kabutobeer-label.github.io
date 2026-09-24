@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>カブトビール ラベル作成</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@400;600;800&family=Zen+Maru+Gothic:wght@400;700&family=Kaisei+Decol:wght@400;700&display=swap" rel="stylesheet">
+<!-- 見た目(CSS)を読み込み -->
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<!-- ヘッダー　-->
+<header>
+  HANDA PROJECT
+  <button class="menu-btn" id="menuOpen" aria-label="メニュー">☰</button>
+</header>
+
+<!-- ハンバーガーメニュー -->
+<div class="menu-overlay" id="menuOverlay">
+  <div class="menu-panel">
+    <button class="menu-close" id="menuClose">×</button>
+    <button class="menu-item" data-go="top">ホーム</button>
+    <button class="menu-item" data-go="about">カブトビールって？</button>
+    <button class="menu-item" data-go="design">ラベル作り</button>
+  </div>
+</div>
+
+<main>
+<!-- 画面0:TOP画面(最初に表示される画面) -->
+<div class="screen active" id="screen-top">
+  <!-- 写真・ロゴの仮置き(後日、実際の画像に差し替え予定) -->
+  <div class="top-photo">ロゴか写真置く</div>
+  <p class="top-catch">形や色を選んでオリジナルの<br>ビールラベルを作ってみよう！！</p>
+  <!-- サンプルラベル(先頭のデザインを固定色で表示。JavaScriptが中身を差し込む) -->
+  <div class="preview-wrap"><div id="previewTop" class="svg-preview"></div></div>
+  <div class="top-trivia">【カブトビールの豆知識をいれる】</div>
+  <!-- 押すとデザイン選択画面(screen-design)へ移動 -->
+  <button class="cta" id="startBtn">さっそく始める →</button>
+</div>
+
+<!-- 画面0-2:「カブトビールって？」ページ(メニューから移動) -->
+<div class="screen" id="screen-about">
+  <div class="page-title">カブトビールって？</div>
+  <div class="about-body">
+    ここにカブトビールの紹介文。(仮のテキスト 歴史・こだわり・写真などを、後日差し替え予定)
+    <br><br>
+    カブトビールは、明治時代に誕生したビールブランドです。オリジナルラベル作りを通じて、その歴史に触れてみてください。
+  </div>
+  <button class="cta" id="aboutToDesign" style="margin-top:24px;">ラベル作りをはじめる →</button>
+</div>
+
+<!-- 画面1:デザインを選ぶ画面 -->
+<div class="screen" id="screen-design">
+  <div class="page-title">１．デザインを選ぼう！！</div>
+
+  <!-- 現在選んでいるデザイン・色・文字を反映したプレビュー(JavaScriptが中身を書き換える) -->
+  <div class="preview-wrap"><div id="preview" class="svg-preview"></div></div>
+
+  <div class="divider"></div>
+
+  <!-- フォント(書体セット)の切り替え。現在は1セットのみ、残り2セットは届き次第有効になる -->
+  <div class="font-row">
+    <span class="font-label">フォント</span>
+    <button class="font-arrow" id="fontPrev">‹</button>
+    <span class="font-name" id="fontName"></span>
+    <button class="font-arrow" id="fontNext">›</button>
+  </div>
+
+  <!-- デザイン一覧。中身(9個のサムネイル)はJavaScriptが生成する -->
+  <div class="design-panel">
+    <button class="nav-arrow left" id="prevArrow">‹</button>
+    <div class="design-carousel" id="carousel"></div>
+    <button class="nav-arrow right" id="nextArrow">›</button>
+  </div>
+
+  <!-- 押すと色選択画面(screen-color)へ移動 -->
+  <button class="cta" id="nextBtn">色選びに進む →</button>
+
+  <!-- あと二種類のフォントは後日追加予定 -->
+</div>
+
+<!-- 画面2:色を選ぶ画面 -->
+<div class="screen" id="screen-color">
+  <div class="page-title">２．色を選ぼう！！</div>
+
+  <div class="preview-wrap"><div id="preview2" class="svg-preview"></div></div>
+
+  <div class="divider"></div>
+
+  <!-- 「色1(主色)」「色2(副色)」「文字」を切り替えるタブ -->
+  <div class="tabs" id="colorTabs">
+    <button class="tab-btn active" data-role="primary">色1</button>
+    <button class="tab-btn" data-role="secondary">色2</button>
+    <button class="tab-btn" data-role="text">文字</button>
+  </div>
+
+  <!-- 20色のパレット(1ページ10色×2ページ、横スワイプ切り替え)。中身はJavaScriptが生成 -->
+  <div class="swatch-panel">
+    <button class="nav-arrow left" id="swatchPrev">‹</button>
+    <div class="swatch-scroll" id="swatchScroll"></div>
+    <button class="nav-arrow right" id="swatchNext">›</button>
+  </div>
+
+  <div class="btn-row">
+    <button class="btn-outline" id="backToDesign">デザイン選びに戻る</button>
+    <button class="btn-primary" id="toText">文字入れに進む →</button>
+  </div>
+</div>
+
+<!-- 画面3:文字を入力する画面 -->
+<div class="screen" id="screen-text">
+  <div class="page-title">３．文字を入れよう！！</div>
+
+  <div class="preview-wrap"><div id="preview3" class="svg-preview"></div></div>
+
+  <div class="divider"></div>
+
+  <p class="input-label">あなたの名前など好きな言葉を入れよう！</p>
+  <!-- ここに入力した文字が、ラベルの指定位置にそのまま反映される(1行・自動縮小) -->
+  <input type="text" id="textInput" maxlength="20" placeholder="好きな言葉を入れてね">
+
+  <div class="btn-row" style="margin-top:20px;">
+    <button class="btn-outline" id="backToColor">色選びに戻る</button>
+    <button class="btn-primary" id="toComplete">完成！</button>
+  </div>
+</div>
+
+<!-- 画面4:完成画面(瓶に巻いたプレビュー+ダウンロード) -->
+<div class="screen" id="screen-complete">
+  <div class="page-title">４．完成！画像はダウンロードできるよ！！</div>
+
+  <!-- 瓶に巻きつけた完成イメージ。<canvas>はJavaScriptで絵を描くための土台タグ -->
+  <div class="preview-wrap"><canvas id="bottleCanvas" width="360" height="470" style="width:60%;max-width:220px;height:auto;"></canvas></div>
+
+  <!-- 瓶の絵は後日差し替え -->
+
+  <div class="btn-row" style="margin-top:14px;">
+    <!-- ラベル単体のPNGを保存 -->
+    <button class="btn-outline" id="saveLabel">ラベル画像を保存</button>
+    <!-- 瓶に巻いた完成画像のPNGを保存 -->
+    <button class="btn-primary" id="saveBottle">瓶ラベル画像を保存</button>
+  </div>
+
+  <button class="cta" id="backToText" style="margin-top:16px;background:#fff;color:var(--red-dark);border:1px solid var(--red);">文字を直す</button>
+</div>
+</main>
+
+<!-- 動作の仕組み(JavaScript)を読み込み。画面の切り替えや、色・文字の反映はすべてここで行っている -->
+<script src="app.js"></script>
+</body>
+</html>

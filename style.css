@@ -1,0 +1,343 @@
+  /* 色・共通設定:サイト全体で使う色の名前(変数)をまとめて定義。ここを変えると全体の配色が変わる */
+:root{
+    --red:#bf3e26;
+    --red-dark:#9c3220;
+    --cream:#fffef9;
+    --gray:#838487;
+    --line:#e7c9c2;
+    --panel:#a97c72;
+    color-scheme: light;
+  }
+  /* 要素の幅・高さの計算方法をそろえる(paddingを含めてサイズ計算する設定) */
+*{box-sizing:border-box;}
+  /* ブラウザ標準の余白を消し、画面いっぱいに広げる */
+html,body{margin:0;height:100%;}
+  /* ページ全体の背景。背景の格子状(方眼紙のような模様)を表すコード:
+     縦線・横線を28pxごとに1本ずつ描き、下地にクリーム色を敷いている */
+  body{
+    font-family:'Zen Maru Gothic', sans-serif;
+    background:
+      linear-gradient(var(--line) 1px, transparent 1px) 0 0/28px 28px,
+      linear-gradient(90deg, var(--line) 1px, transparent 1px) 0 0/28px 28px,
+      var(--cream);
+    color:#3a2a24;
+    min-height:100%;
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+  }
+  /* ページ上部の赤いヘッダー帯(常に画面上部に固定表示される) */
+  header{
+    background:var(--red);
+    color:#fff;
+    padding:calc(14px + env(safe-area-inset-top,0px)) 18px 14px;
+    font-weight:700;
+    letter-spacing:.02em;
+    position:sticky;
+    top:0;
+    z-index:5;
+    text-align:center;
+    position:relative;
+  }
+  /* ヘッダー右側のハンバーガーメニュー(☰)ボタン */
+  .menu-btn{
+    position:absolute;
+    right:8px;
+    top:calc(50% + env(safe-area-inset-top,0px)/2);
+    transform:translateY(-50%);
+    background:none;
+    border:none;
+    color:#fff;
+    font-size:22px;
+    cursor:pointer;
+    line-height:1;
+    padding:12px;
+  }
+  /* メニューを開いたときに画面全体を覆う、半透明の黒い背景 */
+  .menu-overlay{
+    position:fixed;
+    inset:0;
+    background:rgba(0,0,0,.35);
+    z-index:20;
+    display:none;
+  }
+  /* メニューが開いている間だけ表示する切り替え */
+  .menu-overlay.open{display:block;}
+  /* 右からスライドしてくる、メニュー本体の赤いパネル */
+  .menu-panel{
+    position:absolute;
+    top:0;right:0;
+    width:70%;
+    max-width:280px;
+    height:100%;
+    background:var(--red);
+    color:#fff;
+    padding:calc(18px + env(safe-area-inset-top,0px)) 20px 20px;
+  }
+  /* メニュー内の閉じる(×)ボタン */
+  .menu-close{
+    background:none;border:none;color:#fff;font-size:22px;cursor:pointer;
+    display:block;margin-left:auto;margin-bottom:18px;
+  }
+  /* メニュー内の各項目(ホーム/カブトビールって？/ラベル作り)のボタン */
+  .menu-item{
+    display:block;
+    width:100%;
+    text-align:left;
+    background:none;
+    border:none;
+    border-top:1px solid rgba(255,255,255,.35);
+    color:#fff;
+    font-size:15px;
+    font-family:inherit;
+    padding:14px 4px;
+    cursor:pointer;
+  }
+  /* メニュー最後の項目の下にも区切り線を付ける */
+  .menu-item:last-child{border-bottom:1px solid rgba(255,255,255,.35);}
+  /* TOP画面:写真・ロゴを置く場所(まだ仮の灰色の四角) */
+  .top-photo{
+    background:#d8d8d8;
+    border-radius:12px;
+    height:150px;
+    display:flex;align-items:center;justify-content:center;
+    color:#7a6b64;font-size:13px;margin-bottom:18px;
+  }
+  /* TOP画面:キャッチコピーの文字 */
+  .top-catch{
+    text-align:center;color:var(--red-dark);font-weight:700;font-size:16px;
+    line-height:1.7;margin-bottom:18px;
+  }
+  /* TOP画面:カブトビールの豆知識を表示する枠 */
+  .top-trivia{
+    background:#fff;border:1px solid var(--line);border-radius:12px;
+    padding:14px;font-size:13px;line-height:1.8;color:#5a4a44;margin-bottom:22px;
+  }
+  /* 「カブトビールって？」ページの本文 */
+  .about-body{font-size:14px;line-height:2;color:#5a4a44;}
+  /* 各画面共通:横幅の上限とページ全体の余白(スマホ〜PCまで中央寄せ表示) */
+  main{max-width:480px;margin:0 auto;padding:18px 16px 40px;}
+  /* 各画面の見出し(「１．デザインを選ぼう！！」など) */
+  .page-title{
+    text-align:center;
+    font-weight:700;
+    font-size:16px;
+    color:var(--red-dark);
+    margin-bottom:14px;
+  }
+  /* ラベルのプレビューを囲む、白背景・赤枠のカード */
+  .preview-wrap{
+    background:#fff;
+    border:2px solid var(--red);
+    border-radius:18px;
+    padding:16px;
+    display:flex;
+    justify-content:center;
+  }
+  /* プレビュー内に読み込んだSVGの表示サイズ調整 */
+  .svg-preview{width:60%;max-width:220px;}
+  .svg-preview svg{width:100%;height:auto;display:block;}
+
+  /* プレビューとその下の操作エリアを区切る、赤い横線 */
+  .divider{height:2px;background:var(--red);margin:20px 0 14px;border-radius:1px;}
+
+  /* デザイン選択画面:フォント(書体セット)切り替えの行 */
+  .font-row{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:14px;
+    margin-bottom:20px;
+    font-size:14px;
+  }
+  /* 「フォント」という文字ラベル */
+  .font-label{color:var(--red-dark);font-weight:700;}
+  /* 現在選択中のフォント名の表示 */
+  .font-name{min-width:150px;text-align:center;font-weight:700;}
+  /* フォントを前後に切り替える丸い矢印ボタン */
+  .font-arrow{
+    border:1px solid var(--red);
+    background:#fff;
+    color:var(--red);
+    width:36px;height:36px;
+    border-radius:50%;
+    font-size:16px;
+    line-height:1;
+    cursor:pointer;
+  }
+
+  /* デザイン一覧を囲む、茶色い背景のパネル(参考イメージ図の「Design...」枠) */
+  .design-panel{
+    background:var(--panel);
+    border-radius:22px;
+    padding:22px 10px;
+    position:relative;
+    margin-bottom:22px;
+  }
+  /* デザイン一覧:横にスワイプできるスクロール領域 */
+  .design-carousel{
+    display:flex;
+    gap:10px;
+    overflow-x:auto;
+    scroll-snap-type:x mandatory;
+    padding:2px 34px;
+    scrollbar-width:none;
+    -webkit-overflow-scrolling:touch;
+  }
+  /* デザイン一覧のスクロールバーを見た目上、非表示にする */
+  .design-carousel::-webkit-scrollbar{display:none;}
+  /* デザイン一覧の中の、1個分のサムネイルカード */
+  .design-thumb{
+    flex:0 0 30%;
+    scroll-snap-align:start;
+    background:#fff;
+    border:3px solid transparent;
+    border-radius:12px;
+    padding:6px;
+    cursor:pointer;
+  }
+  /* 選択中のデザインだけ、赤い枠線を付けて分かるようにする */
+  .design-thumb.selected{border-color:var(--red);}
+  /* サムネイル内のSVGの表示サイズ */
+  .design-thumb svg{width:100%;height:100%;display:block;}
+
+  /* 左右にスクロールさせる丸い矢印ボタン(デザイン一覧・色パレットで共通使用) */
+  .nav-arrow{
+    position:absolute;
+    top:50%;
+    transform:translateY(-50%);
+    width:40px;height:40px;
+    border-radius:50%;
+    border:none;
+    background:rgba(255,255,255,.9);
+    color:var(--red-dark);
+    font-size:18px;
+    cursor:pointer;
+  }
+  /* 矢印ボタンを左端・右端に配置 */
+  .nav-arrow.left{left:6px;}
+  .nav-arrow.right{right:6px;}
+
+  /* 各画面の主要な操作ボタン(「さっそく始める」「色選びに進む」など、赤背景の大きいボタン) */
+  .cta{
+    display:block;
+    width:100%;
+    background:var(--red);
+    color:#fff;
+    border:none;
+    border-radius:10px;
+    padding:14px;
+    font-size:16px;
+    font-weight:700;
+    font-family:inherit;
+    cursor:pointer;
+  }
+  /* 補足説明として表示する、小さめの文字 */
+  .note{font-size:12px;color:#7a6b64;margin-top:14px;line-height:1.7;text-align:center;}
+  /* 該当データ(SVG)がまだ届いていないときに、プレビュー欄に出す代わりの表示 */
+  .placeholder{
+    width:100%;aspect-ratio:210/262;display:flex;align-items:center;justify-content:center;
+    text-align:center;color:var(--gray);font-size:13px;background:#f2ece7;border-radius:10px;
+  }
+  /* 該当データ(SVG)がまだ届いていないときに、サムネイルの代わりに出す表示 */
+  .thumb-placeholder{
+    width:100%;height:100%;min-height:70px;display:flex;align-items:center;justify-content:center;
+    color:var(--gray);font-size:11px;background:#f2ece7;border-radius:6px;
+  }
+  /* 画面切り替えの仕組み:普段は非表示(display:none)にしておき、
+     JavaScript側でactiveクラスを付けた画面だけを表示する */
+  .screen{display:none;}
+  .screen.active{display:block;}
+
+  /* 色選択画面:「色1」「色2」「文字」を切り替えるタブの並び */
+  .tabs{display:flex;gap:8px;margin-bottom:14px;justify-content:center;flex-wrap:wrap;}
+  /* タブ1個分のボタン */
+  .tab-btn{
+    border:1px solid var(--red);
+    background:#fff;
+    color:var(--red-dark);
+    padding:7px 16px;
+    border-radius:999px;
+    font-size:13px;
+    cursor:pointer;
+    font-family:inherit;
+    font-weight:700;
+  }
+  /* 選択中のタブだけ、赤背景にして分かるようにする */
+  .tab-btn.active{background:var(--red);color:#fff;}
+
+  /* 色パレット全体(左右の矢印込み)を囲むエリア */
+  .swatch-panel{position:relative;padding:0 34px;margin-bottom:6px;}
+  /* 色パレット:横にスワイプできるスクロール領域(1ページ10色) */
+  .swatch-scroll{
+    display:flex;
+    overflow-x:auto;
+    scroll-snap-type:x mandatory;
+    gap:0;
+    margin-bottom:6px;
+    scrollbar-width:none;
+    -webkit-overflow-scrolling:touch;
+  }
+  /* 色パレットのスクロールバーを見た目上、非表示にする */
+  .swatch-scroll::-webkit-scrollbar{display:none;}
+  /* 色パレットの1ページ分(10色ぶんを5列×2行で並べる) */
+  .swatch-page{
+    flex:0 0 100%;
+    scroll-snap-align:start;
+    display:grid;
+    grid-template-columns:repeat(5,1fr);
+    gap:12px;
+    padding:2px 2px;
+  }
+  /* 色1個分の丸いスウォッチ(色見本) */
+  .swatch{
+    aspect-ratio:1;
+    border-radius:50%;
+    border:3px solid transparent;
+    cursor:pointer;
+    box-shadow:inset 0 0 0 1px rgba(0,0,0,.08);
+  }
+  /* 選択中の色だけ、濃い枠線を付けて分かるようにする */
+  .swatch.selected{border-color:#3a2a24;}
+
+  /* 画面下部に2つ並べて置くボタンの横並びレイアウト */
+  .btn-row{display:flex;gap:10px;}
+  /* 2択ボタンのうち、控えめな方(白背景・赤枠。「戻る」系のボタン) */
+  .btn-outline{
+    flex:1;
+    background:#fff;
+    color:var(--red-dark);
+    border:1px solid var(--red);
+    border-radius:10px;
+    padding:14px 8px;
+    font-size:14px;
+    font-weight:700;
+    font-family:inherit;
+    cursor:pointer;
+  }
+  /* 2択ボタンのうち、目立たせたい方(赤背景。「進む」系のボタン) */
+  .btn-primary{
+    flex:1;
+    background:var(--red);
+    color:#fff;
+    border:none;
+    border-radius:10px;
+    padding:14px 8px;
+    font-size:14px;
+    font-weight:700;
+    font-family:inherit;
+    cursor:pointer;
+  }
+  /* 文字入力画面の案内文(「あなたの名前など好きな言葉を入れよう！」) */
+  .input-label{font-size:13px;color:var(--red-dark);font-weight:700;text-align:center;margin-bottom:10px;}
+  /* 文字入力欄そのもののスタイル */
+  #textInput{
+    width:100%;
+    font-size:16px;
+    padding:12px 14px;
+    border:1px solid var(--gray);
+    border-radius:8px;
+    font-family:inherit;
+    background:#fff;
+    color:#3a2a24;
+    caret-color:#3a2a24;
+    -webkit-text-fill-color:#3a2a24;
+  }
