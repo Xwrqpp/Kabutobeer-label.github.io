@@ -1,1 +1,1 @@
-# x24100.github.io
+# kabutobeer-label.github.io
