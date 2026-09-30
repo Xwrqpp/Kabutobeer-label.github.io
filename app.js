@@ -460,8 +460,6 @@ async function renderCompleteScreen(){
   view.getContext('2d').drawImage(composed, 0, 0);
 }
 
-// 通常のブラウザのダウンロード機能を使う(<a download>方式)。GitHub Pagesなど、
-// 実際に公開したサイトではこの方法で問題なく動作する。
 // 画像データ(blob)を、指定したファイル名でパソコン・スマホに保存させる関数
 function downloadBlob(blob, filename){
   const url = URL.createObjectURL(blob);
