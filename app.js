@@ -23,8 +23,8 @@ const svgCache = {};
 // 例:font-01は label_svg-01.svg 〜 09.svg のまま使う
 const FILE_PREFIX = {
   'font-01': 'label_svg-',
-  'font-02': 'design-',
-  'font-03': 'design-'
+  'font-02': 'label_svg-',
+  'font-03': 'label_svg-'
 };
 
 async function loadDesignSvg(fontSet, designId){
