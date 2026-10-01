@@ -4,9 +4,16 @@
 
 // 3種類の書体セット(デザインの絵柄一式)の名前。svgs/font-01/ 〜 font-03/ フォルダに対応
 const FONT_SETS = ['font-01', 'font-02', 'font-03'];
-const FONT_LABELS = { 'font-01':'書体セット1', 'font-02':'書体セット2', 'font-03':'書体セット3' };
+const FONT_LABELS = { 'font-01':'VDL-LogoJrBlack', 'font-02':'Noto Serif JP', 'font-03':'MOBO' };
+// ユーザーが入力した文字を描くときに使うフォント。
+// font-01はAdobe Fonts(Typekit)経由、font-02はGoogle Fonts、font-03はMOBO(同梱)。
+const FONT_STACKS = {
+  'font-01': "'vdl-logojrblack', sans-serif",
+  'font-02': "'Noto Serif JP', serif",
+  'font-03': "'MOBO', sans-serif"
+};
 // デザインは9種類固定:design-01 〜 design-09 という名前のリストを自動生成
-const DESIGN_IDS = Array.from({length:9}, (_,i)=> 'label_svg-' + String(i+1).padStart(2,'0'));
+const DESIGN_IDS = Array.from({length:9}, (_,i)=> 'design-' + String(i+1).padStart(2,'0'));
 
 // svgs/{font-01|02|03}/{design-01..09}.svg を都度読み込み、一度読んだものはキャッシュする。
 // ファイルが無い(まだ届いていない書体セットなど)場合は null を返す。
@@ -24,7 +31,8 @@ async function loadDesignSvg(fontSet, designId){
   return svgCache[key];
 }
 
-// アプリ全体でユーザーの選択を保持する
+// アプリ全体で今どんな選択がされているかを持つ「状態」。ここを書き換えると
+// プレビューや保存内容がすべて連動して変わる
 const state = {
   design: DESIGN_IDS[0],
   fontIndex: 0,
@@ -69,7 +77,7 @@ function applyColor(svg, roleSuffix, attr, color){
   });
 }
 
-const SAMPLE_TEXT = 'ここは自由に記入してね';
+const SAMPLE_TEXT = 'なまえ サンプル';
 
 // 文字を置く場所を示す目印(.text-01の四角形)を、画面には見えないように隠す関数
 function hideTextGuide(svg){
@@ -96,7 +104,7 @@ function drawTextAt(svg, text, color){
   t.setAttribute('y', y + h/2);
   t.setAttribute('text-anchor', 'middle');
   t.setAttribute('dominant-baseline', 'middle');
-  t.setAttribute('font-family', "'Shippori Mincho', serif");
+  t.setAttribute('font-family', FONT_STACKS[FONT_SETS[state.fontIndex]]); // 選択中の書体セットに応じたフォントを使う
   t.setAttribute('font-weight', '600');
   t.setAttribute('fill', color);
   let fontSize = h * 0.78;
@@ -345,6 +353,46 @@ document.getElementById('backToText').addEventListener('click', async ()=>{
 
 // ---- 画面4:完成(瓶巻きつけ描画・PNG保存) ----
 // 今の状態(デザイン・色・文字)を反映した、書き出し用の完全なSVG文字列を作る
+// PNG書き出し時は、SVGを<img>経由で画像化(ラスタライズ)するため、ページのCSSが
+// 適用されない(独立した文脈として扱われる)ブラウザがある。そのため、ユーザー入力
+// 文字にWebフォントを使う場合は、SVGの中に直接フォントデータを埋め込んでおく必要がある。
+// ※VDL-LogoJrBlack(font-01)はAdobe Fontsの配信条件上、フォントファイルを直接
+//   取得・埋め込みすることができないため、書き出し画像では代替フォントになる場合がある。
+function arrayBufferToBase64(buf){
+  let binary = '';
+  const bytes = new Uint8Array(buf);
+  for(let i=0; i<bytes.length; i++) binary += String.fromCharCode(bytes[i]);
+  return btoa(binary);
+}
+
+const fontDataCache = {};
+async function getEmbeddedFontCss(fontSet){
+  if(fontDataCache[fontSet] !== undefined) return fontDataCache[fontSet];
+  let css = '';
+  try{
+    if(fontSet === 'font-03'){
+      // MOBOは同梱のフォントファイルからそのまま埋め込む
+      const res = await fetch('fonts/MOBO.otf');
+      const b64 = arrayBufferToBase64(await res.arrayBuffer());
+      css = `@font-face{font-family:'MOBO';src:url(data:font/otf;base64,${b64}) format('opentype');}`;
+    } else if(fontSet === 'font-02'){
+      // Noto Serif JPはGoogle FontsのCSSから実際のフォントファイルURLを取得して埋め込む
+      const cssRes = await fetch('https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@700&display=swap');
+      const cssText = await cssRes.text();
+      const match = cssText.match(/url\((https:\/\/fonts\.gstatic\.com\/[^)]+)\)\s*format\('(\w+)'\)/);
+      if(match){
+        const fontRes = await fetch(match[1]);
+        const b64 = arrayBufferToBase64(await fontRes.arrayBuffer());
+        css = `@font-face{font-family:'Noto Serif JP';src:url(data:font/${match[2]};base64,${b64}) format('${match[2]}');}`;
+      }
+    }
+  }catch(e){
+    css = '';
+  }
+  fontDataCache[fontSet] = css;
+  return css;
+}
+
 async function getCurrentLabelSvgString(){
   const fontSet = FONT_SETS[state.fontIndex];
   const markup = await loadDesignSvg(fontSet, state.design);
@@ -357,6 +405,12 @@ async function getCurrentLabelSvgString(){
   svg.setAttribute('height', vb[3]);
   applyAllColors(svg);
   drawUserText(svg, state.text, state.colors.text);
+  const fontCss = await getEmbeddedFontCss(fontSet);
+  if(fontCss){
+    const styleEl = document.createElementNS('http://www.w3.org/2000/svg', 'style');
+    styleEl.textContent = fontCss;
+    svg.insertBefore(styleEl, svg.firstChild);
+  }
   return new XMLSerializer().serializeToString(svg);
 }
 
@@ -460,6 +514,8 @@ async function renderCompleteScreen(){
   view.getContext('2d').drawImage(composed, 0, 0);
 }
 
+// 通常のブラウザのダウンロード機能を使う(<a download>方式)。GitHub Pagesなど、
+// 実際に公開したサイトではこの方法で問題なく動作する。
 // 画像データ(blob)を、指定したファイル名でパソコン・スマホに保存させる関数
 function downloadBlob(blob, filename){
   const url = URL.createObjectURL(blob);
@@ -570,6 +626,8 @@ function clearSavedState(){
 // ---- 初期化 ----
 // ページを開いた直後に一度だけ実行する初期化処理
 (async ()=>{
+  // MOBOフォントを先に読み込んでおく(文字サイズの自動計算がずれないようにするため)
+  try{ await document.fonts.load("16px MOBO"); }catch(e){}
   const restoredScreen = loadStateFromStorage();
   await renderTopPreview();
   await renderThumbs();

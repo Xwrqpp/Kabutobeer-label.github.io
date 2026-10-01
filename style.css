@@ -1,4 +1,10 @@
-  /* 色・共通設定:サイト全体で使う色の名前(変数)をまとめて定義。ここを変えると全体の配色が変わる */
+  /* MOBOフォントの読み込み:ユーザー入力文字の表示用(書体セット3選択時に使用) */
+@font-face{
+  font-family:'MOBO';
+  src:url('fonts/MOBO.otf') format('opentype');
+  font-display:swap;
+}
+/* 色・共通設定:サイト全体で使う色の名前(変数)をまとめて定義。ここを変えると全体の配色が変わる */
 :root{
     --red:#bf3e26;
     --red-dark:#9c3220;
