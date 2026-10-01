@@ -13,16 +13,27 @@ const FONT_STACKS = {
   'font-03': "'MOBO', sans-serif"
 };
 // デザインは9種類固定:design-01 〜 design-09 という名前のリストを自動生成
-const DESIGN_IDS = Array.from({length:9}, (_,i)=> 'label_svg-' + String(i+1).padStart(2,'0'));
+const DESIGN_IDS = Array.from({length:9}, (_,i)=> 'design-' + String(i+1).padStart(2,'0'));
 
 // svgs/{font-01|02|03}/{design-01..09}.svg を都度読み込み、一度読んだものはキャッシュする。
 // ファイルが無い(まだ届いていない書体セットなど)場合は null を返す。
 const svgCache = {};
+// フォルダによって元のファイル名のルールが違っていても対応できるように、
+// font-setごとに「ファイル名の頭につく文字」を指定できるようにしておく。
+// 例:font-01は label_svg-01.svg 〜 09.svg のまま使う
+const FILE_PREFIX = {
+  'font-01': 'label_svg-',
+  'font-02': 'design-',
+  'font-03': 'design-'
+};
+
 async function loadDesignSvg(fontSet, designId){
   const key = fontSet + '/' + designId;
   if(key in svgCache) return svgCache[key];
+  const num = designId.split('-')[1]; // 'design-01' から '01' を取り出す
+  const filename = (FILE_PREFIX[fontSet] || 'design-') + num + '.svg';
   try{
-    const res = await fetch('svgs/' + fontSet + '/' + designId + '.svg');
+    const res = await fetch('svgs/' + fontSet + '/' + filename);
     if(!res.ok) throw new Error('not found');
     svgCache[key] = await res.text();
   }catch(e){
