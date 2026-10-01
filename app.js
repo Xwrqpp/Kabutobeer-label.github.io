@@ -13,7 +13,7 @@ const FONT_STACKS = {
   'font-03': "'MOBO', sans-serif"
 };
 // デザインは9種類固定:design-01 〜 design-09 という名前のリストを自動生成
-const DESIGN_IDS = Array.from({length:9}, (_,i)=> 'design-' + String(i+1).padStart(2,'0'));
+const DESIGN_IDS = Array.from({length:9}, (_,i)=> 'label_svg-' + String(i+1).padStart(2,'0'));
 
 // svgs/{font-01|02|03}/{design-01..09}.svg を都度読み込み、一度読んだものはキャッシュする。
 // ファイルが無い(まだ届いていない書体セットなど)場合は null を返す。
